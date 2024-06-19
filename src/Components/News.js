@@ -82,7 +82,7 @@ loading:false,
     let data = await fetch(url);
     let parsedData = await data.json();
     this.setState({
-      page: this.state.page + 1,
+      page: this.state.page - 1,
       articles: parsedData.articles,
       loading:false,
     });
