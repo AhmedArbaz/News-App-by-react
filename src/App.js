@@ -13,7 +13,7 @@ export default class App extends Component {
       <div className='container py-5'>
         <Navbar />
         
-        <News/>
+        <News pageSize={6} country="us" category="business"/>
         
       </div>
     )
