@@ -45,7 +45,7 @@ export default class News extends Component {
       this.props.country
     }&category=${
       this.props.category
-    }&apiKey=c56478f2069544e28ff421f5dd1c0ce6&page=${
+    }&apiKey=${this.props.apiKey}&page=${
       this.state.page + 1
     }&pageSize=${this.props.pageSize}`;
     this.setState({ loading: true });
@@ -90,7 +90,7 @@ async updateNews(){
         this.props.country
       }&category=${
         this.props.category
-      }&apiKey=c56478f2069544e28ff421f5dd1c0ce6&page=${
+      }&apiKey=${this.props.apiKey}&page=${
         this.state.page + 1
       }&pageSize=${this.props.pageSize}`;
       this.setState({ loading: true });
@@ -114,7 +114,7 @@ async updateNews(){
       this.props.country
     }&category=${
       this.props.category
-    }&apiKey=c56478f2069544e28ff421f5dd1c0ce6&page=${
+    }&apiKey=${this.props.apiKey}&page=${
       this.state.page + 1
     }&pageSize=${this.props.pageSize}`;
 
@@ -134,7 +134,7 @@ async updateNews(){
   // ya function hay jo kay use ho raha hay infinite scrolling may 
  fetchMoreData = async () => {
    this.setState({page: this.state.page + 1})
-   const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=c56478f2069544e28ff421f5dd1c0ce6&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`
+   const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`
   
    this.setState({ loading: true });
  
