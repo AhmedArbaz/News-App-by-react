@@ -1,157 +1,184 @@
-import React, { Component } from "react";
+// import React, { Component } from "react";
+import { useState,useEffect } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default class News extends Component {
+
+const News = (props)=> {
   //ais may ham nay constructor ko use kara this.state kar kay state banatay hain ya bhi daka hay aur change karnay kay liay this.setState kartay hain
 
-  static defaultPorps = {
-    country: "us",
-    pageSize: 6,
-    category: "business",
-  };
+//convert class state info function useState
+const [articles, setArticles] = useState([]);
+const [loading, setLoading] = useState(true);
+const [page, setPage] = useState(1);
+const [totalResults, settotalResults] = useState(0);
 
-  static propTypes = {
-    country: PropTypes.string,
-    pageSize: PropTypes.number,
-    category: PropTypes.string,
-  };
 
-  capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+//ya dynamically ham title change kar rahay hain apni app ka
+document.title = `${capitalizeFirstLetter(
+  props.category
+)} - SmartNews`;
 
-  constructor(props) {
-    super(props);
-    console.log("Hello I am a constructor from News components");
-    this.state = {
-      articles: [],
-      loading: false,
-      page: 1,
-      totalResults: 0,
-    };
-    //ya dynamically ham title change kar rahay hain apni app ka
-    document.title = `${this.capitalizeFirstLetter(
-      this.props.category
-    )} - SmartNews`;
-  }
+  // constructor(props) {
+  //   super(props);
+  //   console.log("Hello I am a constructor from News components");
+    
+  // }
 
-  //ya vo method hay jo kay tab run ho ga jab ap ka ya nichay pura component ka render run ho jay ga phir ya run ho ga Q kay ya react life cycle ka method hay react-life-cycle ko samajnay kay liay ais link may jao (https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
-  async componentDidMount() {
-    console.log("cdm");
-    let url = `https://newsapi.org/v2/top-headlines?country=${
-      this.props.country
-    }&category=${
-      this.props.category
-    }&apiKey=${this.props.apiKey}&page=${
-      this.state.page + 1
-    }&pageSize=${this.props.pageSize}`;
-    this.setState({ loading: true });
-
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    console.log(parsedData);
-    this.setState({
-      articles: parsedData.articles,
-      totalResults: parsedData.totalResults,
-      loading: false,
-    });
-  }
-
-async updateNews(){
-  const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=c56478f2069544e28ff421f5dd1c0ce6&page=${this.state.page}&pageSize=${this.props.pageSize}`
   
-  this.setState({ loading: true });
-
+  const updateNews = async ()=>{
+    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`
+    
+    setLoading(true)
+    // this.setState({ loading: true });
+    
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
-    this.setState({
-      articles: parsedData.articles,
-      totalResults: parsedData.totalResults,
-      loading: false,
-    });
-}
+    setArticles(parsedData.articles);
+    settotalResults(parsedData.totalResults)
+    setLoading(false)
+    
+    
+    // this.setState({
+      //   articles: parsedData.articles,
+      //   totalResults: parsedData.totalResults,
+      //   loading: false,
+      // });
+    }
+
+
+    //ya vo method hay jo kay tab run ho ga jab ap ka ya nichay pura component ka render run ho jay ga phir ya run ho ga Q kay ya react life cycle ka method hay react-life-cycle ko samajnay kay liay ais link may jao (https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
+    
+    // async componentDidMount() {
+    //   console.log("cdm");
+    //   let url = `https://newsapi.org/v2/top-headlines?country=${
+    //     props.country
+    //   }&category=${
+    //     props.category
+    //   }&apiKey=${props.apiKey}&page=${
+    //     this.state.page + 1
+    //   }&pageSize=${props.pageSize}`;
+    //   this.setState({ loading: true });
+  
+    //   let data = await fetch(url);
+    //   let parsedData = await data.json();
+    //   console.log(parsedData);
+    //   this.setState({
+    //     articles: parsedData.articles,
+    //     totalResults: parsedData.totalResults,
+    //     loading: false,
+    //   });
+    // }
+  
+    useEffect(() => {
+      updateNews();
+     
+    }, []);
 
   //Making logic on Next and previous buttons
 
-  handleNextClick = async () => {
+  const handleNextClick = async () => {
     console.log("next");
     if (
       !(
-        this.state.page + 1 >
-        Math.ceil(this.state.totalResults / this.props.pageSize)
+       page + 1 >
+        Math.ceil(totalResults / props.pageSize)
       )
     ) {
       //same auper vala copy kar kay dala url vala
       let url = `https://newsapi.org/v2/top-headlines?country=${
-        this.props.country
+        props.country
       }&category=${
-        this.props.category
-      }&apiKey=${this.props.apiKey}&page=${
-        this.state.page + 1
-      }&pageSize=${this.props.pageSize}`;
-      this.setState({ loading: true });
+        props.category
+      }&apiKey=${props.apiKey}&page=${
+        page + 1
+      }&pageSize=${props.pageSize}`;
+      setLoading(true)
 
       let data = await fetch(url);
       let parsedData = await data.json();
       console.log(parsedData);
-      this.setState({
-        page: this.state.page + 1,
-        articles: parsedData.articles,
-        loading: false,
-      });
+     
+      // this.setState({
+      //   page: this.state.page + 1,
+      //   articles: parsedData.articles,
+      //   loading: false,
+      // });
+
+      setPage(page +1)
+      setArticles(parsedData.articles)
+      setLoading(false)
     }
   };
-
-  handlePreviousClick = async () => {
+   
+  const handlePreviousClick = async () => {
     console.log("previous");
 
     //same copy kia
     let url = `https://newsapi.org/v2/top-headlines?country=${
-      this.props.country
+      props.country
     }&category=${
-      this.props.category
-    }&apiKey=${this.props.apiKey}&page=${
-      this.state.page + 1
-    }&pageSize=${this.props.pageSize}`;
+      props.category
+    }&apiKey=${props.apiKey}&page=${
+      page + 1
+    }&pageSize=${props.pageSize}`;
 
     //ya loading kay liay kar rahay hain
-    this.setState({ loading: true });
+    // this.setState({ loading: true });
+    setLoading(true)
 
     let data = await fetch(url);
     let parsedData = await data.json();
-    this.setState({
-      page: this.state.page - 1,
-      articles: parsedData.articles,
-      loading: false,
-    });
+  
+    // this.setState({
+    //   page: this.state.page - 1,
+    //   articles: parsedData.articles,
+    //   loading: false,
+    // });
+    setPage(page -1)
+    setArticles(parsedData.articles)
+    setLoading(false)
+
   };
 
 
   // ya function hay jo kay use ho raha hay infinite scrolling may 
- fetchMoreData = async () => {
-   this.setState({page: this.state.page + 1})
-   const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`
+ const fetchMoreData = async () => {
+
+  //  this.setState({page: this.state.page + 1})
+   setPage(page + 1)
+
+   const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`
   
-   this.setState({ loading: true });
+  //  this.setState({ loading: true });
+  setLoading(true)
  
      let data = await fetch(url);
      let parsedData = await data.json();
      console.log(parsedData);
-     this.setState({
-       articles: this.state.articles.concat(parsedData.articles),
-       totalResults: parsedData.totalResults,
-       loading: false,
-     });
+   
+   
+     //  this.setState({
+    //    articles: this.state.articles.concat(parsedData.articles),
+    //    totalResults: parsedData.totalResults,
+    //    loading: false,
+    //  });
+
+     setArticles(articles.concat(parsedData.articles))
+     settotalResults( parsedData.totalResults)
+     setLoading(false)
    
   };
 
 
 
-  render() {
+  
     console.log("render");
     return (
       <>
@@ -159,20 +186,20 @@ async updateNews(){
           <div className="text-center py-3">
             {/* ya ham jo h1 hay vaha bhi change kar rahay hain apnay h1 ko dynamically */}
             <h1>
-              SmartNews - Top {this.capitalizeFirstLetter(this.props.category)}{" "}
+              SmartNews - Top {capitalizeFirstLetter(props.category)}{" "}
               Headlines
             </h1>
 
             {/* using spinner component  aur ais syntax may likha hay ager true ho loading to dikho varna nahi */}
-            {this.state.loading && <Spinner />}
+            {loading && <Spinner />}
           </div>
 
           {/* 1st ham nay nichay jo .map vala code hay vaha ham nay ak gif lagaya tha jo kay loading pay chal raha tha lakin ab ham infinite scroll bar dana chatay hain to aus kay liay ham nay ya infinite scroll package install kia hay aur vo use kar rahay hain ya code aus ki live example say lia hay aur end kia hay row div kay bad aur jo loading lagaya tha map par vo hata dia hay  */}
 
           <InfiniteScroll
-            dataLength={this.state.articles.length} // yaha article .length kar dia 
-            next={this.fetchMoreData}
-            hasMore={this.state.articles.length !== this.state.totalResults} //has more pay ya day dia state may bhi totalResult ko default 0 kar dia ya totalResult bhi data say a raha hay api valay
+            dataLength={articles.length} // yaha article .length kar dia 
+            next={fetchMoreData}
+            hasMore={articles.length !== totalResults} //has more pay ya day dia state may bhi totalResult ko default 0 kar dia ya totalResult bhi data say a raha hay api valay
             loader={<Spinner/>}
           >
             <div className="container">
@@ -180,7 +207,7 @@ async updateNews(){
             <div className="row mx-2">
               {/* yaha add karin gay kay ager loading nahi hay to dikho data varna nahi dikhao  */}
 
-              {this.state.articles.map((element) => {
+              {articles.map((element) => {
                 return (
                   <div className="col-md-4" key={element.url}>
                     {/* ya khud hi jitnay bhi card ab dalon ga vo khud align ho jain gay  */}
@@ -215,7 +242,7 @@ async updateNews(){
             <button
               disabled={
                 this.state.page + 1 >
-                Math.ceil(this.state.totalResults / this.props.pageSize)
+                Math.ceil(this.state.totalResults / props.pageSize)
               }
               type="button"
               className="btn btn-dark"
@@ -229,4 +256,20 @@ async updateNews(){
       </>
     );
   }
-}
+
+  
+  News.defaultPorps = {
+    country: "us",
+    pageSize: 6,
+    category: "business",
+  };
+
+  News.propTypes = {
+    country: PropTypes.string,
+    pageSize: PropTypes.number,
+    category: PropTypes.string,
+  };
+
+
+
+export default News
