@@ -78,84 +78,20 @@ document.title = `${capitalizeFirstLetter(
   
     useEffect(() => {
       updateNews();
-     
+      document.title = `${capitalizeFirstLetter(props.category)} - SmartNews`
+     //eslint-disable-next-line
     }, []);
 
-  //Making logic on Next and previous buttons
-
-  const handleNextClick = async () => {
-    console.log("next");
-    if (
-      !(
-       page + 1 >
-        Math.ceil(totalResults / props.pageSize)
-      )
-    ) {
-      //same auper vala copy kar kay dala url vala
-      let url = `https://newsapi.org/v2/top-headlines?country=${
-        props.country
-      }&category=${
-        props.category
-      }&apiKey=${props.apiKey}&page=${
-        page + 1
-      }&pageSize=${props.pageSize}`;
-      setLoading(true)
-
-      let data = await fetch(url);
-      let parsedData = await data.json();
-      console.log(parsedData);
-     
-      // this.setState({
-      //   page: this.state.page + 1,
-      //   articles: parsedData.articles,
-      //   loading: false,
-      // });
-
-      setPage(page +1)
-      setArticles(parsedData.articles)
-      setLoading(false)
-    }
-  };
-   
-  const handlePreviousClick = async () => {
-    console.log("previous");
-
-    //same copy kia
-    let url = `https://newsapi.org/v2/top-headlines?country=${
-      props.country
-    }&category=${
-      props.category
-    }&apiKey=${props.apiKey}&page=${
-      page + 1
-    }&pageSize=${props.pageSize}`;
-
-    //ya loading kay liay kar rahay hain
-    // this.setState({ loading: true });
-    setLoading(true)
-
-    let data = await fetch(url);
-    let parsedData = await data.json();
-  
-    // this.setState({
-    //   page: this.state.page - 1,
-    //   articles: parsedData.articles,
-    //   loading: false,
-    // });
-    setPage(page -1)
-    setArticles(parsedData.articles)
-    setLoading(false)
-
-  };
 
 
   // ya function hay jo kay use ho raha hay infinite scrolling may 
  const fetchMoreData = async () => {
 
   //  this.setState({page: this.state.page + 1})
-   setPage(page + 1)
-
-   const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`
   
+  const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`
+  
+  setPage(page + 1)
   //  this.setState({ loading: true });
   setLoading(true)
  
